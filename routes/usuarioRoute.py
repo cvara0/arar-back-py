@@ -1,44 +1,42 @@
 from flask import Blueprint, jsonify, render_template, request
-from models.usuarioModel import Usuarios
-from database.db import db
-from auth.login import login_manager, login_user, login_required, logout_user
 
-usuario_bp = Blueprint('usuario',__name__)
+from controllers.usuarioController import UsuarioController
+from flask_login import current_user, login_user, login_required, logout_user
 
-@usuario_bp.route('/registrar-usuario', methods=["GET", "POST"])
+
+usuario_bp = Blueprint("usuario", __name__)
+
+
+@usuario_bp.route("/registrar-usuario", methods=["GET", "POST"])
 def registrar_usuario():
     data = request.get_json()
     if request.method == "POST":
-        usuario = Usuarios(
-            data['id_tipo'],
-            data['nombre'],
-            data['apellido'],
-            data['email'],
-            data['clave'],
-            data['foto']
-        )
-    respuesta = usuario.registrar()
-    return respuesta
-    #login_user(usuario)
+        return UsuarioController.registrar_usuario(data)
+    else:
+        return jsonify({'mensaje:': 'no es método POST'})
+    
 
-@usuario_bp.route('/iniciar-sesion-usuario', methods=["GET", "POST"])
+@usuario_bp.route("/iniciar-sesion-usuario", methods=["GET", "POST"])
 def iniciar_sesion_usuario():
     data = request.get_json()
     if request.method == "POST":
-        usuario = Usuarios.traer_por_email(data['email'])
-        if usuario is not None and usuario.verificar_clave(data['clave']):
-                usuario.iniciar_sesion()
+        return UsuarioController.iniciar_sesion_usuario(data)
+    else:
+        return jsonify({'mensaje:': 'no es método POST'})
 
+@usuario_bp.route("/usuario-actual", methods=["GET"])
+def usuario_actual():
+    return UsuarioController.usuario_actual()
+        
+#en cada una verificar por current user
+@usuario_bp.route("/editar-cuenta-usuario", methods=["GET", "PATCH"])
 @login_required
-@usuario_bp.route('/cuenta-usuario', methods=["GET", "POST"])
-def cuenta_usuario():
-    pass
+def editar_cuenta_usuario():
+    data = request.get_json()
+    return UsuarioController.editar_usuario(data)
 
+@usuario_bp.route("/cerrar-sesion-usuario")
 @login_required
-@usuario_bp.route('/cerrar-sesion-usuario')
 def cerrar_sesion_usuario():
-    logout_user()
+    return UsuarioController.cerrar_sesion_usuario()
 
-@login_manager.user_loader
-def cargar_usuario(id_usuario):
-    return Usuarios.traer_por_id(id_usuario)

@@ -6,7 +6,7 @@ from auth.login import login_required
 obra_bp = Blueprint('obra',__name__)
 
 @login_required
-@obra_bp.route('/agregar-obra', methods=["GET", "POST"])
+@obra_bp.route('/registrar-obra', methods=["GET", "POST"])
 def agregar_obra():
     data = request.get_json()
     #if request.method == "POST":
