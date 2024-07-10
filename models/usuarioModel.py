@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 
 class Usuarios(db.Model, UserMixin):
     id_usuario = db.Column(db.Integer, primary_key=True)
+    obras = db.relationship('Obras', lazy=True, backref='usuarios') #'joined'
     id_tipo_usuario = db.Column(db.SmallInteger, nullable=False)
     nombre = db.Column(db.String(64), nullable=False)
     apellido = db.Column(db.String(64), nullable=False)
@@ -12,6 +13,7 @@ class Usuarios(db.Model, UserMixin):
     telefono =  db.Column(db.String(16), nullable=False)
     foto = db.Column(db.Text, nullable=False)
     bio = db.Column(db.String(512), nullable=False)
+    
 
     def __init__(
         self,
