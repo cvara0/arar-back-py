@@ -19,23 +19,17 @@ def registrar_obra():
 @obra_bp.route('/obras/<int:id_tipo_obra>', methods=["GET"])
 def obras_por_id_tipo_obra(id_tipo_obra): 
     return ObraController.traer_por_id_tipo_obra(id_tipo_obra)
-    
-
-"""@obra_bp.route('/obra-de-arte/<id_obra>', methods=["GET"])
-def arte_traer_por_id(): 
-    obras = db.session.execute(db.select(Obras).order_by(Obras.id_obra)).scalars()
-    return jsonify({'obras:': [obra.serialize() for obra in obras]})
-
-@obra_bp.route('/artesanias')
-def artesania_traer_todo():
-    return 'traer todod artesania'
-
- @login_required
-@obra_bp.route('/eliminar-obra/<id_obra>')
-def eliminar(id_obra):
-    return 'eliminar obra'
 
 @login_required
-@obra_bp.route('/editar-obra')
-def editar():
-    return 'editar obra' """
+@obra_bp.route('/mis-obras/<int:id_usuario_actual>', methods=["GET"])
+def mis_obras(id_usuario_actual): 
+    return ObraController.traer_por_id_usuario_actual(id_usuario_actual)
+
+@login_required  
+@obra_bp.route('/mis-obras/editar-obra', methods=["GET", "PATCH"])
+def editar_obra():
+    data = request.get_json()
+    if request.method == "PATCH":
+        return ObraController.editar_obra(data)
+    else:
+        return jsonify({'mensaje:': 'no es método PATCH'}) 

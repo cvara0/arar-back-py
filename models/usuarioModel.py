@@ -38,6 +38,7 @@ class Usuarios(db.Model, UserMixin):
 
     def a_diccionario(self):
         return {
+            "id_usuario" : self.id_usuario,
             "id_tipo_usuario": self.id_tipo_usuario,
             "nombre": self.nombre,
             "apellido": self.apellido,

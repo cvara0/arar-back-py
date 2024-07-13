@@ -20,9 +20,9 @@ lm.login_view = "/"
 
 CORS(app)
 
-@app.route("/")
+""" @app.route("/")
 def inicio():
-    return render_template('inicio.html')#render_template("inicio.html")
+    return render_template('inicio.html') """#render_template("inicio.html")
 
 app.register_blueprint(usuario_bp)
 app.register_blueprint(obra_bp)

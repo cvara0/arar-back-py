@@ -2,7 +2,7 @@ from sqlalchemy import desc
 import sqlalchemy
 from models.obraModel import Obras
 from database.db import db
-from flask import jsonify
+from flask import g, jsonify, session
 from flask_login import current_user, login_user, login_required, logout_user
 from auth.login import lm
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -42,8 +42,31 @@ class ObraController():
         return db.session.execute(db.select(Obras).filter(Obras.foto.like(f"%{foto}%"))).scalars().all()
 
     @staticmethod
+    def traer_por_id(obra_id):
+        return Obras.query.get(obra_id)
+    
+   
+    @staticmethod
+    def traer_por_id_usuario_actual(id_usuario):
+        obras = db.session.query(Obras) \
+                      .filter(Obras.id_usuario == id_usuario) \
+                      .order_by(desc(Obras.id_obra))
+        obras_de_usuario_actual = [
+                        {
+                            "id_obra" : obra.id_obra,
+                            "id_tipo_obra" : obra.id_tipo_obra,
+                            "foto" : obra.foto,
+                            "titulo" : obra.titulo,
+                            "descripcion" : obra.descripcion,
+                            "id_usuario": obra.id_usuario
+                        }
+                        for obra in obras
+                    ]
+        return jsonify(obras_de_usuario_actual)
+
+    @staticmethod
     def traer_por_id_tipo_obra(id_tipo_obra):
-        obras = db.session.query(Obras, Usuarios.nombre, Usuarios.apellido) \
+        obras = db.session.query(Obras, Usuarios.nombre, Usuarios.apellido, Usuarios.telefono, Usuarios.id_tipo_usuario, Usuarios.id_usuario) \
                       .join(Usuarios) \
                       .filter(Obras.id_tipo_obra == id_tipo_obra) \
                       .order_by(desc(Obras.id_obra))
@@ -55,11 +78,34 @@ class ObraController():
                     "titulo" : obra.titulo,
                     "descripcion" : obra.descripcion,
                     "nombre" : nombre,
-                    "apellido" : apellido
+                    "apellido" : apellido,
+                    "telefono" : telefono,
+                    "id_tipo_usuario" : id_tipo_usuario,
+                    "id_usuario" : id_usuario
                 }
-                for obra, nombre, apellido in obras
+                for obra, nombre, apellido, telefono, id_tipo_usuario,id_usuario in obras
             ]
         return jsonify(obras_con_usuario)
+    
+    @staticmethod
+    def editar_obra(data):
+        mensaje = ()
+        try:
+            obra = Obras.query.get(data["id_obra"])
+            if data["id_tipo_obra"]:
+                        obra.id_tipo_obra = data["id_tipo_obra"] 
+            if data["foto"]:
+                        obra.foto = data["foto"] 
+            if data["titulo"]:
+                        obra.titulo = data["titulo"] 
+            if data["descripcion"]:
+                        obra.descripcion = data["descripcion"]
+            db.session.commit()
+            mensaje = jsonify({"mensaje": "Obra actualizada con éxito", "cod":0})
+        except:
+            db.session.rollback()
+            mensaje = jsonify({"mensaje:": "error al actualizar obra", "cod":1})  
+        return mensaje
     
 """@staticmethod
    def editar_obra(data): #seguir aca

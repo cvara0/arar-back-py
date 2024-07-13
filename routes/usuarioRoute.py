@@ -1,7 +1,9 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, request
 
 from controllers.usuarioController import UsuarioController
 from flask_login import current_user, login_user, login_required, logout_user
+
+from models.usuarioModel import Usuarios
 
 
 usuario_bp = Blueprint("usuario", __name__)
@@ -35,8 +37,10 @@ def editar_cuenta_usuario():
     data = request.get_json()
     return UsuarioController.editar_usuario(data)
 
-@usuario_bp.route("/cerrar-sesion-usuario")
+@usuario_bp.route("/cerrar-sesion-usuario", methods=["GET"])
 @login_required
 def cerrar_sesion_usuario():
     return UsuarioController.cerrar_sesion_usuario()
+
+
 
