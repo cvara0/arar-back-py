@@ -3,6 +3,7 @@ venv/
 .venv/
 
 __pyacache__/
+__pyacache__
 *.py[cod]
 
 .pytest_cache/
