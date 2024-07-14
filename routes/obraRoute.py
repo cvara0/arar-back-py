@@ -45,8 +45,9 @@ def editar_obra():
             "titulo": request.form.get("titulo"),
             "descripcion": request.form.get("descripcion")
         }
-        file = request.files["foto"]
-        return ObraController.editar_obra(data,file)
+        #file = request.files["foto"]
+       
+        return ObraController.editar_obra(data)#,file
     else:
         return jsonify({"mensaje:": "no es método PATCH"})
 

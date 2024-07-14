@@ -113,14 +113,14 @@ class ObraController:
         return jsonify(obras_con_usuario)
 
     @staticmethod
-    def editar_obra(data, file):
+    def editar_obra(data):
         mensaje = None
         try:
             obra = Obras.query.get(data.get("id_obra"))
             print(obra)
             if data.get("id_tipo_obra"):
                 obra.id_tipo_obra = data.get("id_tipo_obra")
-            if file.filename:
+            """ if file.filename is not None:
                 if not ObraController.traer_foto_por_nombre(secure_filename(file.filename)):
                     ruta_de_subida = os.path.join("./static/fotos", obra.foto)
                     if os.path.exists(ruta_de_subida):
@@ -128,7 +128,7 @@ class ObraController:
                     nombre_seguro = secure_filename(file.filename)
                     ruta_de_subida = os.path.join("./static/fotos", nombre_seguro)
                     file.save(ruta_de_subida)
-                    obra.foto = nombre_seguro
+                    obra.foto = nombre_seguro """
          
         
             if data.get("titulo"):
