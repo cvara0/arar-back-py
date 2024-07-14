@@ -9,7 +9,7 @@ from auth.login import lm
 app = Flask(__name__)
 #app.config.from_mapping
 #app.debug = True
-app.config['SECRET_KEY'] = 'arar1234'
+app.config['SECRET_KEY'] = 'top-secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/arar_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
